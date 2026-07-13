@@ -27,10 +27,8 @@ export default function Sidebar({ open, onClose }) {
         ${open ? 'translate-x-0' : '-translate-x-full'}`}
       >
         <div className="flex items-center justify-between px-6 h-16 border-b border-white/10">
-          <div className="flex items-center gap-2">
-            <div className="h-9 w-9 rounded-lg bg-brand-blue flex items-center justify-center">
-              <Gauge className="h-5 w-5 text-white" />
-            </div>
+          <div className="flex items-center gap-3">
+            <img src="/logo-tunav.png" alt="TUNAV Logo" className="h-8 w-auto" />
             <div className="leading-tight">
               <p className="font-semibold text-sm tracking-wide">TUNAV</p>
               <p className="text-[10px] text-brand-blue-light uppercase tracking-widest">IT Group</p>

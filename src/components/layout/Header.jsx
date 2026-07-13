@@ -13,9 +13,10 @@ export default function Header({ onMenuClick, connectionStatus }) {
         >
           <Menu className="h-5 w-5" />
         </button>
+        <img src="/logo-tunav.png" alt="Logo" className="h-7 w-auto sm:hidden" />
         <div className="min-w-0">
           <h1 className="text-sm sm:text-lg font-semibold text-brand-navy leading-tight truncate">
-            <span className="sm:hidden">TUNAV Dashboard</span>
+            <span className="sm:hidden pl-1">Dashboard</span>
             <span className="hidden sm:inline">TUNAV IT GROUP Dashboard</span>
           </h1>
           <p className="hidden sm:block text-xs text-slate-400">Real-time telemetry overview</p>
