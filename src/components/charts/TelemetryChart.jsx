@@ -45,35 +45,36 @@ function CustomTooltip({ active, payload, label }) {
 
 export default function TelemetryChart({ data }) {
   return (
-    <div className="bg-white rounded-xl border border-slate-200 p-5 shadow-sm">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-5 shadow-sm">
+      <div className="flex items-center justify-between mb-3 sm:mb-4">
         <div>
           <h2 className="text-sm font-semibold text-brand-navy">Telemetry Trend</h2>
           <p className="text-xs text-slate-400">Voies 1 à 7 — mesures</p>
         </div>
       </div>
 
-      <div className="h-80 w-full">
+      <div className="h-64 sm:h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
+          <LineChart data={data} margin={{ top: 5, right: 5, left: -25, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
             <XAxis
               dataKey="time"
               tickFormatter={formatTime}
-              tick={{ fontSize: 11, fill: '#94A3B8' }}
+              tick={{ fontSize: 10, fill: '#94A3B8' }}
               axisLine={{ stroke: '#E2E8F0' }}
               tickLine={false}
+              minTickGap={24}
             />
             <YAxis
-              tick={{ fontSize: 11, fill: '#94A3B8' }}
+              tick={{ fontSize: 10, fill: '#94A3B8' }}
               axisLine={false}
               tickLine={false}
-              width={40}
+              width={36}
             />
             <Tooltip content={<CustomTooltip />} />
             <Legend
               iconType="circle"
-              wrapperStyle={{ fontSize: 11, color: '#64748B' }}
+              wrapperStyle={{ fontSize: 10, color: '#64748B' }}
               formatter={(value) => value.replace('voie', 'Voie ')}
             />
             {VOIE_KEYS.map((key) => (

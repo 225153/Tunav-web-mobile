@@ -131,8 +131,8 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col min-w-0">
         <Header onMenuClick={() => setSidebarOpen(true)} connectionStatus={connectionStatus} />
 
-        <main className="flex-1 p-4 sm:p-6 space-y-6">
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+        <main className="flex-1 p-3 sm:p-6 space-y-4 sm:space-y-6">
+          <div className="grid grid-cols-2 xl:grid-cols-4 gap-2.5 sm:gap-4">
             <MetricCard icon={Cpu} label="Total IMEI" value={metrics.totalDevices} accent="blue" />
             <MetricCard icon={AlertTriangle} label="Mesures en alarme" value={metrics.alerts} accent="alert" />
             <MetricCard
