@@ -1,0 +1,14 @@
+{
+  "name": "vigi-simulator",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Simule l'envoi de trames VIGI decodees vers la table Supabase mesures",
+  "main": "simulate.js",
+  "scripts": {
+    "start": "node simulate.js"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "dotenv": "^16.4.5"
+  }
+}

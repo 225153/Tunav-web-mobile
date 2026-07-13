@@ -1,12 +1,25 @@
 import {
-  AreaChart,
-  Area,
+  LineChart,
+  Line,
   XAxis,
   YAxis,
   CartesianGrid,
   Tooltip,
+  Legend,
   ResponsiveContainer,
 } from 'recharts'
+
+const VOIE_COLORS = {
+  voie1: '#1769FF',
+  voie2: '#00A3FF',
+  voie3: '#0B2545',
+  voie4: '#F59E0B',
+  voie5: '#EF4444',
+  voie6: '#10B981',
+  voie7: '#8B5CF6',
+}
+
+const VOIE_KEYS = Object.keys(VOIE_COLORS)
 
 function formatTime(isoString) {
   try {
@@ -19,9 +32,13 @@ function formatTime(isoString) {
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
-    <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-xs">
+    <div className="bg-white border border-slate-200 rounded-lg shadow-lg px-3 py-2 text-xs space-y-1">
       <p className="text-slate-400 mb-1">{formatTime(label)}</p>
-      <p className="font-semibold text-brand-navy">{payload[0].value} units</p>
+      {payload.map((entry) => (
+        <p key={entry.dataKey} className="font-semibold" style={{ color: entry.color }}>
+          {entry.name}: {entry.value ?? '—'}
+        </p>
+      ))}
     </div>
   )
 }
@@ -32,19 +49,13 @@ export default function TelemetryChart({ data }) {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h2 className="text-sm font-semibold text-brand-navy">Telemetry Trend</h2>
-          <p className="text-xs text-slate-400">Live values from live_telemetry</p>
+          <p className="text-xs text-slate-400">Voies 1 à 7 — mesures</p>
         </div>
       </div>
 
-      <div className="h-72 w-full">
+      <div className="h-80 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <AreaChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-            <defs>
-              <linearGradient id="telemetryGradient" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#1769FF" stopOpacity={0.35} />
-                <stop offset="95%" stopColor="#00A3FF" stopOpacity={0} />
-              </linearGradient>
-            </defs>
+          <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
             <XAxis
               dataKey="time"
@@ -60,16 +71,26 @@ export default function TelemetryChart({ data }) {
               width={40}
             />
             <Tooltip content={<CustomTooltip />} />
-            <Area
-              type="monotone"
-              dataKey="value"
-              stroke="#1769FF"
-              strokeWidth={2}
-              fill="url(#telemetryGradient)"
-              isAnimationActive
-              animationDuration={400}
+            <Legend
+              iconType="circle"
+              wrapperStyle={{ fontSize: 11, color: '#64748B' }}
+              formatter={(value) => value.replace('voie', 'Voie ')}
             />
-          </AreaChart>
+            {VOIE_KEYS.map((key) => (
+              <Line
+                key={key}
+                type="monotone"
+                dataKey={key}
+                name={key}
+                stroke={VOIE_COLORS[key]}
+                strokeWidth={2}
+                dot={false}
+                connectNulls
+                isAnimationActive
+                animationDuration={400}
+              />
+            ))}
+          </LineChart>
         </ResponsiveContainer>
       </div>
     </div>
