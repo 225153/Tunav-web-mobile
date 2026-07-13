@@ -47,12 +47,49 @@ function round1(n) {
     return Math.round(n * 10) / 10;
 }
 
-// Fait evoluer chaque voie legerement (courbe realiste), avec un pic occasionnel
-// pour declencher des depassements/alarmes de temps en temps.
+// Fait evoluer chaque voie legerement (courbe realiste), avec des variations plus frequentes
+// pour declencher des depassements/alarmes et des défauts internes de façon plus réaliste.
 function nextVoieValue(current) {
-    const spike = Math.random() < 0.08 ? randomBetween(3, 7) : 0;
-    const step = randomBetween(-0.9, 0.9) + spike;
+    const step = randomBetween(-0.9, 0.9);
     return Math.min(Math.max(current + step, 0), 20);
+}
+
+function buildScenario(voies) {
+    const scenario = { high: [], low: [] };
+    const roll = Math.random();
+
+    if (roll < 0.25) {
+        scenario.high.push(Math.floor(Math.random() * VOIE_COUNT));
+    } else if (roll < 0.5) {
+        scenario.low.push(Math.floor(Math.random() * VOIE_COUNT));
+    } else if (roll < 0.8) {
+        const first = Math.floor(Math.random() * VOIE_COUNT);
+        const second = (first + 1 + Math.floor(Math.random() * (VOIE_COUNT - 1))) % VOIE_COUNT;
+        scenario.high.push(first);
+        scenario.low.push(second);
+    } else {
+        const count = 1 + Math.floor(Math.random() * 2);
+        for (let i = 0; i < count; i += 1) {
+            const idx = Math.floor(Math.random() * VOIE_COUNT);
+            if (Math.random() < 0.5) scenario.high.push(idx);
+            else scenario.low.push(idx);
+        }
+    }
+
+    return scenario;
+}
+
+function applyScenario(voies, scenario) {
+    return voies.map((value, idx) => {
+        let nextValue = value;
+        if (scenario.high.includes(idx)) {
+            nextValue += randomBetween(2.5, 4.5);
+        }
+        if (scenario.low.includes(idx)) {
+            nextValue -= randomBetween(2.2, 4.2);
+        }
+        return Math.min(Math.max(nextValue, 0), 20);
+    });
 }
 
 // Encode depassements/alarmes en respectant le mapping de bits du protocole VIGI :
@@ -73,15 +110,26 @@ function encodeStatus(voies) {
         }
     });
 
-    // Defaut interne simule rarement (bits 6 a 15 du champ defauts)
-    const defauts = Math.random() < 0.02 ? 1 << (6 + Math.floor(Math.random() * 10)) : 0;
+    // Defauts internes : plusieurs bits peuvent etre actifs simultanement.
+    let defauts = 0;
+    if (Math.random() < 0.2) {
+        const availableBits = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15];
+        const count = 1 + Math.floor(Math.random() * 2);
+        for (let i = 0; i < count; i += 1) {
+            const pickIndex = Math.floor(Math.random() * availableBits.length);
+            const bit = availableBits.splice(pickIndex, 1)[0];
+            defauts |= 1 << bit;
+        }
+    }
 
     return { depassements, alarmes, defauts };
 }
 
 function generateMesure(imei) {
     const state = getState(imei);
-    const voies = state.map(nextVoieValue);
+    const baseVoies = state.map(nextVoieValue);
+    const scenario = buildScenario(baseVoies);
+    const voies = applyScenario(baseVoies, scenario);
     deviceState.set(imei, voies);
 
     const { depassements, alarmes, defauts } = encodeStatus(voies);
