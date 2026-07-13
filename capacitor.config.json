@@ -1,0 +1,6 @@
+{
+  "appId": "com.tunav.dash",
+  "appName": "app-tunav",
+  "webDir": "dist",
+  "bundledWebRuntime": false
+}

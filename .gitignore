@@ -30,3 +30,19 @@ server/.env.local
 *.njsproj
 *.sln
 *.sw?
+
+# Capacitor / Android
+android/local.properties
+android/app/build
+android/build
+capacitor.config.ts.old
+
+# Assets for mobile generation
+!assets/
+!capacitor.config.json
+
+# Build outputs
+dist
+dist-ssr
+*.apk
+*.aab
